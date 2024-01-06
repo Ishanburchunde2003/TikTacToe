@@ -1,0 +1,122 @@
+import java.util.Scanner;
+import java.util.Random;
+
+public class TicTakToe 
+{
+    public static void main(String[] args) 
+    {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter your name: ");
+        String playerName = scanner.nextLine();
+
+        char[][] board = new char[3][3];
+        for (int row = 0; row < board.length; row++) 
+        {
+            for (int col = 0; col < board[row].length; col++) 
+            {
+                board[row][col] = ' ';
+            }
+        }
+
+        char userMark = 'X';
+        char computerMark = 'O';
+
+        boolean gameOver = false;
+
+        while (!gameOver) 
+        {
+            printBoard(board);
+
+            // User's turn
+            System.out.print("Player " + playerName + " enter row and column (1-3) separated by space: ");
+            int userRow = scanner.nextInt() - 1;
+            int userCol = scanner.nextInt() - 1;
+
+            if (isValidMove(board, userRow, userCol)) 
+            {
+                board[userRow][userCol] = userMark;
+                gameOver = haveWon(board, userMark);
+
+                if (gameOver) 
+                {
+                    printBoard(board);
+                    System.out.println("Player " + playerName + " has won!");
+                    break;
+                }
+            } 
+            else 
+            {
+                System.out.println("Invalid move. Try again!");
+                continue;
+            }
+
+           
+            System.out.println("Computer's turn:");
+            int computerRow, computerCol;
+            do 
+            {
+                computerRow = new Random().nextInt(3);
+                computerCol = new Random().nextInt(3);
+            } 
+            while (!isValidMove(board, computerRow, computerCol));
+
+            board[computerRow][computerCol] = computerMark;
+            gameOver = haveWon(board, computerMark);
+
+            if (gameOver) 
+            {
+                printBoard(board);
+                System.out.println("Computer has won!");
+                break;
+            }
+        }
+
+        scanner.close();
+    }
+
+    public static boolean isValidMove(char[][] board, int row, int col) 
+    {
+        return row >= 0 && row < board.length && col >= 0 && col < board[row].length && board[row][col] == ' ';
+    }
+
+    public static boolean haveWon(char[][] board, char player) 
+    {
+        for (int i = 0; i < board.length; i++) 
+        {
+            if (board[i][0] == player && board[i][1] == player && board[i][2] == player) 
+            {
+                return true;
+            }
+        }
+
+        for (int col = 0; col < board[0].length; col++) 
+        {
+            if (board[0][col] == player && board[1][col] == player && board[2][col] == player) 
+            {
+                return true;
+            }
+        }
+
+        if (board[0][0] == player && board[1][1] == player && board[2][2] == player) 
+        {
+            return true;
+        }
+
+        return board[0][2] == player && board[1][1] == player && board[2][0] == player;
+    }
+
+    public static void printBoard(char[][] board) 
+    {
+        System.out.println("-------------");
+        for (int row = 0; row < board.length; row++) 
+        {
+            System.out.print("| ");
+            for (int col = 0; col < board[row].length; col++) 
+            {
+                System.out.print(board[row][col] + " | ");
+            }
+            System.out.println("\n-------------");
+        }
+    }
+}
